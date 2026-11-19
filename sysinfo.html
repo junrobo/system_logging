@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>25-1TR-T6HC-A0101 — System Info</title><style>
+:root{--bg:#f5f6f8;--card:#fff;--fg:#1b1f24;--mut:#667085;--line:#e4e7ec;--acc:#4f46e5;--code:#f2f4f7}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#171a21;--fg:#e6e8ec;--mut:#98a2b3;--line:#262b36;--acc:#8b93ff;--code:#0f1218}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+h1{margin:0;font-size:26px}
+.sub{color:var(--mut);margin:4px 0 20px;font-size:13px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));margin-bottom:22px}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:0}
+.fact b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.fact span{display:block;font-weight:600;overflow-wrap:anywhere}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+nav a{font-size:13px;color:var(--acc);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:3px 10px;border-radius:99px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:14px;padding:4px 18px 14px}
+section h2{font-size:16px;margin:14px 0 8px;color:var(--acc)}
+h3{font-size:12px;margin:14px 0 6px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+table.kv{border-collapse:collapse;width:100%}
+table.kv th{text-align:left;font-weight:500;color:var(--mut);padding:4px 14px 4px 0;width:28%;vertical-align:top;white-space:nowrap}
+table.kv td{padding:4px 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+table.kv tr+tr{border-top:1px solid var(--line)}
+pre{background:var(--code);border-radius:8px;padding:10px 12px;margin:0;overflow:auto;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.empty{color:var(--mut);margin:4px 0;font-style:italic}
+details{margin-top:6px}summary{cursor:pointer;color:var(--mut);font-size:13px}
+@media (max-width:600px){table.kv th{white-space:normal;width:36%}}
+</style></head>
+<body><div class="wrap">
+<h1>25-1TR-T6HC-A0101 — System Info</h1>
+<p class="sub">source: local · generated 2026-11-17 14:10</p>
+<div class="grid"><div class="fact"><b>Host</b><span>25-1TR-T6HC-A0101</span></div><div class="fact"><b>Board</b><span>191</span></div><div class="fact"><b>Arch</b><span>x86_64</span></div><div class="fact"><b>CPU</b><span>13th Gen Intel(R) Core(TM) i5-13500TE</span></div><div class="fact"><b>Cores</b><span>20</span></div><div class="fact"><b>RAM</b><span>15.4 GiB</span></div><div class="fact"><b>OS</b><span>Ubuntu 22.04.5 LTS</span></div><div class="fact"><b>Kernel</b><span>Linux 5.15.0-139-generic</span></div><div class="fact"><b>Load 1/5/15</b><span>1.80 / 2.52 / 2.64</span></div><div class="fact"><b>Uptime</b><span> 3:30</span></div></div>
+<nav><a href="#s0">System</a><a href="#s1">Board / Firmware</a><a href="#s2">CPU</a><a href="#s3">Memory</a><a href="#s4">Storage</a><a href="#s5">Network</a><a href="#s6">USB</a><a href="#s7">PCI</a><a href="#s8">GPU / Display / Accelerators</a><a href="#s9">Thermal / Power</a><a href="#s10">Load / Top processes</a><a href="#s11">Software</a></nav>
+<section id="s0"><h2>System</h2><table class="kv"><tr><th>Hostname</th><td>25-1TR-T6HC-A0101</td></tr><tr><th>OS</th><td>Ubuntu 22.04.5 LTS</td></tr><tr><th>Kernel</th><td>Linux 5.15.0-139-generic  (#149-Ubuntu SMP Fri Apr 11 22:06:13 UTC 2025)</td></tr><tr><th>Arch</th><td>x86_64</td></tr><tr><th>Uptime</th><td>14:10:13 up  3:30,  2 users,  load average: 1.80, 2.52, 2.64</td></tr><tr><th>Virt</th><td>none</td></tr><tr><th>Cmdline</th><td>BOOT_IMAGE=/vmlinuz-5.15.0-139-generic root=UUID=ec8ed055-dc0d-41a2-a5d1-cf0508bcc221 ro net.ifnames=0 biosdevname=0 quiet splash vt.handoff=7</td></tr></table></section><section id="s1"><h2>Board / Firmware</h2><pre>sys_vendor     Default string
+product_name   Default string
+product_version Default string
+board_vendor   Default string
+board_name     Default string
+bios_vendor    American Megatrends International, LLC.
+bios_version   5.27
+bios_date      10/28/2024
+Boot           UEFI</pre></section><section id="s2"><h2>CPU</h2><table class="kv"><tr><th>Architecture</th><td>x86_64</td></tr><tr><th>CPU op-mode(s)</th><td>32-bit, 64-bit</td></tr><tr><th>Address sizes</th><td>46 bits physical, 48 bits virtual</td></tr><tr><th>Byte Order</th><td>Little Endian</td></tr><tr><th>CPU(s)</th><td>20</td></tr><tr><th>On-line CPU(s) list</th><td>0-19</td></tr><tr><th>Vendor ID</th><td>GenuineIntel</td></tr><tr><th>Model name</th><td>13th Gen Intel(R) Core(TM) i5-13500TE</td></tr><tr><th>CPU family</th><td>6</td></tr><tr><th>Model</th><td>191</td></tr><tr><th>Thread(s) per core</th><td>2</td></tr><tr><th>Core(s) per socket</th><td>14</td></tr><tr><th>Socket(s)</th><td>1</td></tr><tr><th>Stepping</th><td>2</td></tr><tr><th>CPU max MHz</th><td>4500.0000</td></tr><tr><th>CPU min MHz</th><td>800.0000</td></tr><tr><th>BogoMIPS</th><td>2611.20</td></tr><tr><th>Virtualization</th><td>VT-x</td></tr><tr><th>L1d cache</th><td>544 KiB (14 instances)</td></tr><tr><th>L1i cache</th><td>704 KiB (14 instances)</td></tr><tr><th>L2 cache</th><td>11.5 MiB (8 instances)</td></tr><tr><th>L3 cache</th><td>24 MiB (1 instance)</td></tr><tr><th>NUMA node(s)</th><td>1</td></tr><tr><th>NUMA node0 CPU(s)</th><td>0-19</td></tr></table><h3>cpuinfo (first core)</h3><table class="kv"><tr><th>processor</th><td>0</td></tr><tr><th>vendor_id</th><td>GenuineIntel</td></tr><tr><th>cpu family</th><td>6</td></tr><tr><th>model</th><td>191</td></tr><tr><th>model name</th><td>13th Gen Intel(R) Core(TM) i5-13500TE</td></tr><tr><th>stepping</th><td>2</td></tr><tr><th>microcode</th><td>0x3a</td></tr><tr><th>cpu MHz</th><td>1300.000</td></tr><tr><th>cache size</th><td>24576 KB</td></tr><tr><th>physical id</th><td>0</td></tr><tr><th>siblings</th><td>20</td></tr><tr><th>core id</th><td>0</td></tr><tr><th>cpu cores</th><td>14</td></tr><tr><th>apicid</th><td>0</td></tr><tr><th>initial apicid</th><td>0</td></tr><tr><th>fpu</th><td>yes</td></tr><tr><th>fpu_exception</th><td>yes</td></tr><tr><th>cpuid level</th><td>32</td></tr><tr><th>wp</th><td>yes</td></tr><tr><th>flags</th><td>fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb intel_pt sha_ni xsaveopt xsavec xgetbv1 xsaves split_lock_detect avx_vnni dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp hwp_pkg_req umip pku ospke waitpkg gfni vaes vpclmulqdq tme rdpid movdiri movdir64b fsrm md_clear serialize pconfig arch_lbr flush_l1d arch_capabilities</td></tr><tr><th>vmx flags</th><td>vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs ept_mode_based_exec tsc_scaling usr_wait_pause</td></tr><tr><th>bugs</th><td>spectre_v1 spectre_v2 spec_store_bypass swapgs eibrs_pbrsb rfds bhi</td></tr><tr><th>bogomips</th><td>2611.20</td></tr><tr><th>clflush size</th><td>64</td></tr><tr><th>cache_alignment</th><td>64</td></tr><tr><th>address sizes</th><td>46 bits physical, 48 bits virtual</td></tr><tr><th>power management</th><td></td></tr></table><h3>cpufreq</h3><table class="kv"><tr><th>cpu0</th><td>cur=2529561 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu1</th><td>cur=2254045 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu10</th><td>cur=3348985 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu11</th><td>cur=3312197 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu12</th><td>cur=2710489 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu13</th><td>cur=2641628 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu14</th><td>cur=2611863 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu15</th><td>cur=2689277 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu16</th><td>cur=2436411 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu17</th><td>cur=1811167 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu18</th><td>cur=2551745 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu19</th><td>cur=2587193 kHz  max=3100000 kHz  gov=performance</td></tr><tr><th>cpu2</th><td>cur=3201532 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu3</th><td>cur=2809488 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu4</th><td>cur=3061155 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu5</th><td>cur=1683678 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu6</th><td>cur=3161926 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu7</th><td>cur=3410636 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu8</th><td>cur=3222798 kHz  max=4500000 kHz  gov=performance</td></tr><tr><th>cpu9</th><td>cur=2830583 kHz  max=4500000 kHz  gov=performance</td></tr></table><h3>caches (cpu0)</h3><pre>L1 Data 48K
+L1 Instruction 32K
+L2 Unified 1280K
+L3 Unified 24576K</pre></section><section id="s3"><h2>Memory</h2><table class="kv"><tr><th>MemTotal:</th><td>16131284 kB</td></tr><tr><th>MemAvailable:</th><td>7182396 kB</td></tr><tr><th>SwapTotal:</th><td>31250428 kB</td></tr><tr><th>Hugepagesize:</th><td>2048 kB</td></tr></table></section><section id="s4"><h2>Storage</h2><h3>block devices</h3><pre>NAME          SIZE TYPE FSTYPE   MOUNTPOINT                          MODEL
+loop0           4K loop squashfs /snap/bare/5                        
+loop1        63.8M loop squashfs /snap/core20/2866                   
+loop2        63.8M loop squashfs /snap/core20/2922                   
+loop3        66.8M loop squashfs /snap/core24/1643                   
+loop4          74M loop squashfs /snap/core22/3129                   
+loop5          74M loop squashfs /snap/core22/2987                   
+loop6        66.8M loop squashfs /snap/core24/2124                   
+loop7       283.8M loop squashfs /snap/firefox/9057                  
+loop8         285M loop squashfs /snap/firefox/9171                  
+loop9       346.3M loop squashfs /snap/gnome-3-38-2004/115           
+loop10      349.7M loop squashfs /snap/gnome-3-38-2004/143           
+loop11      531.4M loop squashfs /snap/gnome-42-2204/247             
+loop12      531.5M loop squashfs /snap/gnome-42-2204/263             
+loop13      615.3M loop squashfs /snap/gnome-46-2404/168             
+loop14        616M loop squashfs /snap/gnome-46-2404/177             
+loop15       91.7M loop squashfs /snap/gtk-common-themes/1535        
+loop16        402M loop squashfs /snap/mesa-2404/1781                
+loop17        402M loop squashfs /snap/mesa-2404/1839                
+loop18         12M loop squashfs /snap/snap-store/1447               
+loop19       11.6M loop squashfs /snap/snap-store/1468               
+loop20       44.7M loop squashfs /snap/snapd/28254                   
+loop21       32.5M loop squashfs /snap/snapd/28332                   
+loop22        828K loop squashfs /snap/snapd-desktop-integration/387 
+loop23        828K loop squashfs /snap/snapd-desktop-integration/391 
+nvme0n1     931.5G disk                                              Samsung SSD 990 PRO 1TB
+|-nvme0n1p1 139.7G part ext4     /                                   
+|-nvme0n1p2    95M part vfat     /boot/efi                           
+|-nvme0n1p3   954M part ext4     /boot                               
+|-nvme0n1p4  29.8G part swap     [SWAP]                              
+|-nvme0n1p5  93.1G part ext4     /srv                                
+|-nvme0n1p6   9.3G part ext4     /media/thira/data                   
+|-nvme0n1p7  65.2G part ext4     /opt                                
+|-nvme0n1p8   192G part ext4     /media/thira/backup                 
+`-nvme0n1p9 401.4G part ext4     /media/thira/logs                   </pre><h3>filesystems</h3><pre>Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1  137G   80G   51G  62% /
+/dev/nvme0n1p6  9.1G  625M  8.0G   8% /media/thira/data
+/dev/nvme0n1p3  921M  287M  571M  34% /boot
+/dev/nvme0n1p7   64G  965M   60G   2% /opt
+/dev/nvme0n1p2   94M  6.1M   88M   7% /boot/efi
+/dev/nvme0n1p5   92G   35G   52G  41% /srv
+/dev/nvme0n1p9  394G   50G  325G  14% /media/thira/logs
+/dev/nvme0n1p8  188G   98G   89G  53% /media/thira/backup</pre></section><section id="s5"><h2>Network</h2><h3>addresses</h3><pre>lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             192.167.140.2/24 fe80::76fe:48ff:fead:3c1/64 
+eth1             DOWN           
+eth2             DOWN           
+eth3             DOWN           
+can0             UP             
+can1             UP             
+br-a7e3da0c3349  DOWN           172.18.0.1/16 
+docker0          DOWN           172.17.0.1/16 
+br-1b5956219f31  DOWN           172.19.0.1/16 fe80::80bb:8aff:fe6e:7806/64 
+default via 192.167.140.1 dev eth0 proto static 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown 
+172.18.0.0/16 dev br-a7e3da0c3349 proto kernel scope link src 172.18.0.1 linkdown 
+172.19.0.0/16 dev br-1b5956219f31 proto kernel scope link src 172.19.0.1 linkdown 
+192.167.140.0/24 dev eth0 proto kernel scope link src 192.167.140.2 </pre><h3>link</h3><pre>br-1b5956219f31 state=down     mac=82:bb:8a:6e:78:06 speed=-1
+br-a7e3da0c3349 state=down     mac=4a:ba:38:1c:ff:21 speed=-1
+can0       state=up       mac= speed=
+can1       state=up       mac= speed=
+docker0    state=down     mac=9e:ab:7d:49:94:25 speed=-1
+eth0       state=up       mac=74:fe:48:ad:03:c1 speed=1000
+eth1       state=down     mac=74:fe:48:ad:03:c2 speed=-1
+eth2       state=down     mac=74:fe:48:ad:03:c3 speed=
+eth3       state=down     mac=74:fe:48:ad:03:c4 speed=
+lo         state=unknown  mac=00:00:00:00:00:00 speed=</pre></section><section id="s6"><h2>USB</h2><table class="kv"><tr><th>Bus 002 Device 006</th><td>ID 8086:0b5c Intel Corp. Intel(R) RealSense(TM) Depth Camera 455 </td></tr><tr><th>Bus 002 Device 005</th><td>ID 8086:0b5c Intel Corp. Intel(R) RealSense(TM) Depth Camera 455 </td></tr><tr><th>Bus 002 Device 004</th><td>ID 2109:8110 VIA Labs, Inc. Hub</td></tr><tr><th>Bus 002 Device 003</th><td>ID 8086:0b07 Intel Corp. RealSense D435</td></tr><tr><th>Bus 002 Device 002</th><td>ID 8086:0b07 Intel Corp. RealSense D435</td></tr><tr><th>Bus 002 Device 001</th><td>ID 1d6b:0003 Linux Foundation 3.0 root hub</td></tr><tr><th>Bus 001 Device 002</th><td>ID 2109:2811 VIA Labs, Inc. Hub</td></tr><tr><th>Bus 001 Device 001</th><td>ID 1d6b:0002 Linux Foundation 2.0 root hub</td></tr></table><h3>serial ports</h3><pre>/dev/ttyS0 /dev/ttyS1 /dev/ttyS10 /dev/ttyS11 /dev/ttyS12 /dev/ttyS13 /dev/ttyS14 /dev/ttyS15 /dev/ttyS16 /dev/ttyS17 /dev/ttyS18 /dev/ttyS19 /dev/ttyS2 /dev/ttyS20 /dev/ttyS21 /dev/ttyS22 /dev/ttyS23 /dev/ttyS24 /dev/ttyS25 /dev/ttyS26 /dev/ttyS27 /dev/ttyS28 /dev/ttyS29 /dev/ttyS3 /dev/ttyS30 /dev/ttyS31 /dev/ttyS4 /dev/ttyS5 /dev/ttyS6 /dev/ttyS7 /dev/ttyS8 /dev/ttyS9 </pre></section><section id="s7"><h2>PCI</h2><table class="kv"><tr><th>00</th><td>00.0 Host bridge: Intel Corporation Device 4640 (rev 02)</td></tr><tr><th>00</th><td>01.0 PCI bridge: Intel Corporation 12th Gen Core Processor PCI Express x16 Controller #1 (rev 02)</td></tr><tr><th>00</th><td>02.0 VGA compatible controller: Intel Corporation AlderLake-S GT1 (rev 0c)</td></tr><tr><th>00</th><td>08.0 System peripheral: Intel Corporation 12th Gen Core Processor Gaussian &amp; Neural Accelerator (rev 02)</td></tr><tr><th>00</th><td>0a.0 Signal processing controller: Intel Corporation Platform Monitoring Technology (rev 01)</td></tr><tr><th>00</th><td>14.0 USB controller: Intel Corporation Device 7ae0 (rev 11)</td></tr><tr><th>00</th><td>14.2 RAM memory: Intel Corporation Device 7aa7 (rev 11)</td></tr><tr><th>00</th><td>16.0 Communication controller: Intel Corporation Device 7ae8 (rev 11)</td></tr><tr><th>00</th><td>16.3 Serial controller: Intel Corporation Device 7aeb (rev 11)</td></tr><tr><th>00</th><td>17.0 SATA controller: Intel Corporation Device 7ae2 (rev 11)</td></tr><tr><th>00</th><td>1c.0 PCI bridge: Intel Corporation Device 7aba (rev 11)</td></tr><tr><th>00</th><td>1c.4 PCI bridge: Intel Corporation Device 7abc (rev 11)</td></tr><tr><th>00</th><td>1c.5 PCI bridge: Intel Corporation Device 7abd (rev 11)</td></tr><tr><th>00</th><td>1c.6 PCI bridge: Intel Corporation Device 7abe (rev 11)</td></tr><tr><th>00</th><td>1c.7 PCI bridge: Intel Corporation Device 7abf (rev 11)</td></tr><tr><th>00</th><td>1f.0 ISA bridge: Intel Corporation Device 7a90 (rev 11)</td></tr><tr><th>00</th><td>1f.3 Audio device: Intel Corporation Device 7ad0 (rev 11)</td></tr><tr><th>00</th><td>1f.4 SMBus: Intel Corporation Device 7aa3 (rev 11)</td></tr><tr><th>00</th><td>1f.5 Serial bus controller: Intel Corporation Device 7aa4 (rev 11)</td></tr><tr><th>01</th><td>00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd Device a80c</td></tr><tr><th>02</th><td>00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)</td></tr><tr><th>03</th><td>00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)</td></tr><tr><th>04</th><td>00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)</td></tr><tr><th>05</th><td>00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)</td></tr></table></section><section id="s8"><h2>GPU / Display / Accelerators</h2><pre>drwxr-xr-x  2 root root         80 Nov 17 10:40 by-path
+crw-rw----+ 1 root video  226,   0 Nov 17 10:40 card0
+crw-rw----+ 1 root render 226, 128 Nov 17 10:39 renderD128
+card0 driver=i915
+/dev/video0 /dev/video1 /dev/video10 /dev/video11 /dev/video12 /dev/video13 /dev/video14 /dev/video15 /dev/video16 /dev/video17 /dev/video18 /dev/video19 /dev/video2 /dev/video20 /dev/video21 /dev/video22 /dev/video23 /dev/video3 /dev/video4 /dev/video5 /dev/video6 /dev/video7 /dev/video8 /dev/video9 </pre></section><section id="s9"><h2>Thermal / Power</h2><pre>thermal_zone0 acpitz 50900 mC
+thermal_zone1 x86_pkg_temp 49000 mC
+hwmon0 acpitz
+hwmon1 nvme
+hwmon2 coretemp</pre></section><section id="s10"><h2>Load / Top processes</h2><pre>1.80 2.52 2.64 5/1969 456585</pre><h3>top processes</h3><pre>    PID %CPU %MEM     ELAPSED COMMAND
+   4908  120 11.3    03:29:42 component_conta
+   6394 57.5  3.7    03:29:22 amr_core_main
+   3176 11.1  0.2    03:30:05 db-runtime
+   6022  9.7  3.0    03:29:33 t_navi_backend_
+   6039  6.2  1.2    03:29:32 status_indicato
+   4441  5.9  1.1    03:29:43 ros2_control_no
+   4435  4.7  1.0    03:29:43 io_merge_node</pre></section><section id="s11"><h2>Software</h2><table class="kv"><tr><th>gcc</th><td>gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0</td></tr><tr><th>g++</th><td>g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0</td></tr><tr><th>cmake</th><td>cmake version 3.22.1</td></tr><tr><th>make</th><td>GNU Make 4.3</td></tr><tr><th>python3</th><td>Python 3.10.12</td></tr><tr><th>git</th><td>git version 2.34.1</td></tr><tr><th>docker</th><td>Docker version 28.1.1, build 4eba377</td></tr><tr><th>colcon</th><td>0.20.1</td></tr><tr><th>ROS</th><td>humble </td></tr><tr><th>Modules</th><td>147 loaded</td></tr></table></section>
+<details><summary>raw output</summary><pre>
+=== System ===
+Hostname       25-1TR-T6HC-A0101
+OS             Ubuntu 22.04.5 LTS
+Kernel         Linux 5.15.0-139-generic  (#149-Ubuntu SMP Fri Apr 11 22:06:13 UTC 2025)
+Arch           x86_64
+Uptime         14:10:13 up  3:30,  2 users,  load average: 1.80, 2.52, 2.64
+Virt           none
+Cmdline        BOOT_IMAGE=/vmlinuz-5.15.0-139-generic root=UUID=ec8ed055-dc0d-41a2-a5d1-cf0508bcc221 ro net.ifnames=0 biosdevname=0 quiet splash vt.handoff=7
+
+=== Board / Firmware ===
+sys_vendor     Default string
+product_name   Default string
+product_version Default string
+board_vendor   Default string
+board_name     Default string
+bios_vendor    American Megatrends International, LLC.
+bios_version   5.27
+bios_date      10/28/2024
+Boot           UEFI
+
+=== CPU ===
+Architecture:                         x86_64
+CPU op-mode(s):                       32-bit, 64-bit
+Address sizes:                        46 bits physical, 48 bits virtual
+Byte Order:                           Little Endian
+CPU(s):                               20
+On-line CPU(s) list:                  0-19
+Vendor ID:                            GenuineIntel
+Model name:                           13th Gen Intel(R) Core(TM) i5-13500TE
+CPU family:                           6
+Model:                                191
+Thread(s) per core:                   2
+Core(s) per socket:                   14
+Socket(s):                            1
+Stepping:                             2
+CPU max MHz:                          4500.0000
+CPU min MHz:                          800.0000
+BogoMIPS:                             2611.20
+Virtualization:                       VT-x
+L1d cache:                            544 KiB (14 instances)
+L1i cache:                            704 KiB (14 instances)
+L2 cache:                             11.5 MiB (8 instances)
+L3 cache:                             24 MiB (1 instance)
+NUMA node(s):                         1
+NUMA node0 CPU(s):                    0-19
+-- cpuinfo (first core) --
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 191
+model name	: 13th Gen Intel(R) Core(TM) i5-13500TE
+stepping	: 2
+microcode	: 0x3a
+cpu MHz		: 1300.000
+cache size	: 24576 KB
+physical id	: 0
+siblings	: 20
+core id		: 0
+cpu cores	: 14
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 32
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb intel_pt sha_ni xsaveopt xsavec xgetbv1 xsaves split_lock_detect avx_vnni dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp hwp_pkg_req umip pku ospke waitpkg gfni vaes vpclmulqdq tme rdpid movdiri movdir64b fsrm md_clear serialize pconfig arch_lbr flush_l1d arch_capabilities
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs ept_mode_based_exec tsc_scaling usr_wait_pause
+bugs		: spectre_v1 spectre_v2 spec_store_bypass swapgs eibrs_pbrsb rfds bhi
+bogomips	: 2611.20
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+-- cpufreq --
+cpu0: cur=2529561 kHz  max=4500000 kHz  gov=performance
+cpu1: cur=2254045 kHz  max=4500000 kHz  gov=performance
+cpu10: cur=3348985 kHz  max=4500000 kHz  gov=performance
+cpu11: cur=3312197 kHz  max=4500000 kHz  gov=performance
+cpu12: cur=2710489 kHz  max=3100000 kHz  gov=performance
+cpu13: cur=2641628 kHz  max=3100000 kHz  gov=performance
+cpu14: cur=2611863 kHz  max=3100000 kHz  gov=performance
+cpu15: cur=2689277 kHz  max=3100000 kHz  gov=performance
+cpu16: cur=2436411 kHz  max=3100000 kHz  gov=performance
+cpu17: cur=1811167 kHz  max=3100000 kHz  gov=performance
+cpu18: cur=2551745 kHz  max=3100000 kHz  gov=performance
+cpu19: cur=2587193 kHz  max=3100000 kHz  gov=performance
+cpu2: cur=3201532 kHz  max=4500000 kHz  gov=performance
+cpu3: cur=2809488 kHz  max=4500000 kHz  gov=performance
+cpu4: cur=3061155 kHz  max=4500000 kHz  gov=performance
+cpu5: cur=1683678 kHz  max=4500000 kHz  gov=performance
+cpu6: cur=3161926 kHz  max=4500000 kHz  gov=performance
+cpu7: cur=3410636 kHz  max=4500000 kHz  gov=performance
+cpu8: cur=3222798 kHz  max=4500000 kHz  gov=performance
+cpu9: cur=2830583 kHz  max=4500000 kHz  gov=performance
+-- caches (cpu0) --
+L1 Data 48K
+L1 Instruction 32K
+L2 Unified 1280K
+L3 Unified 24576K
+
+=== Memory ===
+MemTotal:       16131284 kB
+MemAvailable:    7182396 kB
+SwapTotal:      31250428 kB
+Hugepagesize:       2048 kB
+
+=== Storage ===
+-- block devices [table] --
+NAME          SIZE TYPE FSTYPE   MOUNTPOINT                          MODEL
+loop0           4K loop squashfs /snap/bare/5                        
+loop1        63.8M loop squashfs /snap/core20/2866                   
+loop2        63.8M loop squashfs /snap/core20/2922                   
+loop3        66.8M loop squashfs /snap/core24/1643                   
+loop4          74M loop squashfs /snap/core22/3129                   
+loop5          74M loop squashfs /snap/core22/2987                   
+loop6        66.8M loop squashfs /snap/core24/2124                   
+loop7       283.8M loop squashfs /snap/firefox/9057                  
+loop8         285M loop squashfs /snap/firefox/9171                  
+loop9       346.3M loop squashfs /snap/gnome-3-38-2004/115           
+loop10      349.7M loop squashfs /snap/gnome-3-38-2004/143           
+loop11      531.4M loop squashfs /snap/gnome-42-2204/247             
+loop12      531.5M loop squashfs /snap/gnome-42-2204/263             
+loop13      615.3M loop squashfs /snap/gnome-46-2404/168             
+loop14        616M loop squashfs /snap/gnome-46-2404/177             
+loop15       91.7M loop squashfs /snap/gtk-common-themes/1535        
+loop16        402M loop squashfs /snap/mesa-2404/1781                
+loop17        402M loop squashfs /snap/mesa-2404/1839                
+loop18         12M loop squashfs /snap/snap-store/1447               
+loop19       11.6M loop squashfs /snap/snap-store/1468               
+loop20       44.7M loop squashfs /snap/snapd/28254                   
+loop21       32.5M loop squashfs /snap/snapd/28332                   
+loop22        828K loop squashfs /snap/snapd-desktop-integration/387 
+loop23        828K loop squashfs /snap/snapd-desktop-integration/391 
+nvme0n1     931.5G disk                                              Samsung SSD 990 PRO 1TB
+|-nvme0n1p1 139.7G part ext4     /                                   
+|-nvme0n1p2    95M part vfat     /boot/efi                           
+|-nvme0n1p3   954M part ext4     /boot                               
+|-nvme0n1p4  29.8G part swap     [SWAP]                              
+|-nvme0n1p5  93.1G part ext4     /srv                                
+|-nvme0n1p6   9.3G part ext4     /media/thira/data                   
+|-nvme0n1p7  65.2G part ext4     /opt                                
+|-nvme0n1p8   192G part ext4     /media/thira/backup                 
+`-nvme0n1p9 401.4G part ext4     /media/thira/logs                   
+-- filesystems [table] --
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1  137G   80G   51G  62% /
+/dev/nvme0n1p6  9.1G  625M  8.0G   8% /media/thira/data
+/dev/nvme0n1p3  921M  287M  571M  34% /boot
+/dev/nvme0n1p7   64G  965M   60G   2% /opt
+/dev/nvme0n1p2   94M  6.1M   88M   7% /boot/efi
+/dev/nvme0n1p5   92G   35G   52G  41% /srv
+/dev/nvme0n1p9  394G   50G  325G  14% /media/thira/logs
+/dev/nvme0n1p8  188G   98G   89G  53% /media/thira/backup
+
+=== Network ===
+-- addresses [table] --
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+eth0             UP             192.167.140.2/24 fe80::76fe:48ff:fead:3c1/64 
+eth1             DOWN           
+eth2             DOWN           
+eth3             DOWN           
+can0             UP             
+can1             UP             
+br-a7e3da0c3349  DOWN           172.18.0.1/16 
+docker0          DOWN           172.17.0.1/16 
+br-1b5956219f31  DOWN           172.19.0.1/16 fe80::80bb:8aff:fe6e:7806/64 
+default via 192.167.140.1 dev eth0 proto static 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown 
+172.18.0.0/16 dev br-a7e3da0c3349 proto kernel scope link src 172.18.0.1 linkdown 
+172.19.0.0/16 dev br-1b5956219f31 proto kernel scope link src 172.19.0.1 linkdown 
+192.167.140.0/24 dev eth0 proto kernel scope link src 192.167.140.2 
+-- link --
+br-1b5956219f31 state=down     mac=82:bb:8a:6e:78:06 speed=-1
+br-a7e3da0c3349 state=down     mac=4a:ba:38:1c:ff:21 speed=-1
+can0       state=up       mac= speed=
+can1       state=up       mac= speed=
+docker0    state=down     mac=9e:ab:7d:49:94:25 speed=-1
+eth0       state=up       mac=74:fe:48:ad:03:c1 speed=1000
+eth1       state=down     mac=74:fe:48:ad:03:c2 speed=-1
+eth2       state=down     mac=74:fe:48:ad:03:c3 speed=
+eth3       state=down     mac=74:fe:48:ad:03:c4 speed=
+lo         state=unknown  mac=00:00:00:00:00:00 speed=
+
+=== USB ===
+Bus 002 Device 006: ID 8086:0b5c Intel Corp. Intel(R) RealSense(TM) Depth Camera 455 
+Bus 002 Device 005: ID 8086:0b5c Intel Corp. Intel(R) RealSense(TM) Depth Camera 455 
+Bus 002 Device 004: ID 2109:8110 VIA Labs, Inc. Hub
+Bus 002 Device 003: ID 8086:0b07 Intel Corp. RealSense D435
+Bus 002 Device 002: ID 8086:0b07 Intel Corp. RealSense D435
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 002: ID 2109:2811 VIA Labs, Inc. Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+-- serial ports --
+/dev/ttyS0 /dev/ttyS1 /dev/ttyS10 /dev/ttyS11 /dev/ttyS12 /dev/ttyS13 /dev/ttyS14 /dev/ttyS15 /dev/ttyS16 /dev/ttyS17 /dev/ttyS18 /dev/ttyS19 /dev/ttyS2 /dev/ttyS20 /dev/ttyS21 /dev/ttyS22 /dev/ttyS23 /dev/ttyS24 /dev/ttyS25 /dev/ttyS26 /dev/ttyS27 /dev/ttyS28 /dev/ttyS29 /dev/ttyS3 /dev/ttyS30 /dev/ttyS31 /dev/ttyS4 /dev/ttyS5 /dev/ttyS6 /dev/ttyS7 /dev/ttyS8 /dev/ttyS9 
+
+=== PCI ===
+00:00.0 Host bridge: Intel Corporation Device 4640 (rev 02)
+00:01.0 PCI bridge: Intel Corporation 12th Gen Core Processor PCI Express x16 Controller #1 (rev 02)
+00:02.0 VGA compatible controller: Intel Corporation AlderLake-S GT1 (rev 0c)
+00:08.0 System peripheral: Intel Corporation 12th Gen Core Processor Gaussian &amp; Neural Accelerator (rev 02)
+00:0a.0 Signal processing controller: Intel Corporation Platform Monitoring Technology (rev 01)
+00:14.0 USB controller: Intel Corporation Device 7ae0 (rev 11)
+00:14.2 RAM memory: Intel Corporation Device 7aa7 (rev 11)
+00:16.0 Communication controller: Intel Corporation Device 7ae8 (rev 11)
+00:16.3 Serial controller: Intel Corporation Device 7aeb (rev 11)
+00:17.0 SATA controller: Intel Corporation Device 7ae2 (rev 11)
+00:1c.0 PCI bridge: Intel Corporation Device 7aba (rev 11)
+00:1c.4 PCI bridge: Intel Corporation Device 7abc (rev 11)
+00:1c.5 PCI bridge: Intel Corporation Device 7abd (rev 11)
+00:1c.6 PCI bridge: Intel Corporation Device 7abe (rev 11)
+00:1c.7 PCI bridge: Intel Corporation Device 7abf (rev 11)
+00:1f.0 ISA bridge: Intel Corporation Device 7a90 (rev 11)
+00:1f.3 Audio device: Intel Corporation Device 7ad0 (rev 11)
+00:1f.4 SMBus: Intel Corporation Device 7aa3 (rev 11)
+00:1f.5 Serial bus controller: Intel Corporation Device 7aa4 (rev 11)
+01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd Device a80c
+02:00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)
+03:00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)
+04:00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)
+05:00.0 Ethernet controller: Intel Corporation Device 125b (rev 04)
+
+=== GPU / Display / Accelerators ===
+drwxr-xr-x  2 root root         80 Nov 17 10:40 by-path
+crw-rw----+ 1 root video  226,   0 Nov 17 10:40 card0
+crw-rw----+ 1 root render 226, 128 Nov 17 10:39 renderD128
+card0 driver=i915
+/dev/video0 /dev/video1 /dev/video10 /dev/video11 /dev/video12 /dev/video13 /dev/video14 /dev/video15 /dev/video16 /dev/video17 /dev/video18 /dev/video19 /dev/video2 /dev/video20 /dev/video21 /dev/video22 /dev/video23 /dev/video3 /dev/video4 /dev/video5 /dev/video6 /dev/video7 /dev/video8 /dev/video9 
+
+=== Thermal / Power ===
+thermal_zone0 acpitz 50900 mC
+thermal_zone1 x86_pkg_temp 49000 mC
+hwmon0 acpitz
+hwmon1 nvme
+hwmon2 coretemp
+
+=== Load / Top processes ===
+1.80 2.52 2.64 5/1969 456585
+-- top processes [table] --
+    PID %CPU %MEM     ELAPSED COMMAND
+   4908  120 11.3    03:29:42 component_conta
+   6394 57.5  3.7    03:29:22 amr_core_main
+   3176 11.1  0.2    03:30:05 db-runtime
+   6022  9.7  3.0    03:29:33 t_navi_backend_
+   6039  6.2  1.2    03:29:32 status_indicato
+   4441  5.9  1.1    03:29:43 ros2_control_no
+   4435  4.7  1.0    03:29:43 io_merge_node
+
+=== Software ===
+gcc      gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0
+g++      g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0
+cmake    cmake version 3.22.1
+make     GNU Make 4.3
+python3  Python 3.10.12
+git      git version 2.34.1
+docker   Docker version 28.1.1, build 4eba377
+colcon   0.20.1
+ROS            humble 
+Modules        147 loaded
+</pre></details>
+</div></body></html>

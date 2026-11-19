@@ -25,7 +25,7 @@ export LC_ALL=C
 have() { command -v "$1" >/dev/null 2>&1; }
 sec()  { printf '\n=== %s ===\n' "$1"; }
 rd()   { [ -r "$1" ] && tr -d '\0' < "$1" 2>/dev/null; }
-kv()   { printf '%-14s %s\n' "$1" "$2"; }
+kv()   { printf '%-16s %s\n' "$1" "$2"; }
 
 sec "System"
 kv Hostname   "$(hostname 2>/dev/null || rd /proc/sys/kernel/hostname)"
@@ -95,6 +95,7 @@ for n in /sys/class/net/*; do
 done
 
 sec "USB"
+echo "-- devices [table] --"
 if have lsusb; then lsusb; else
     for d in /sys/bus/usb/devices/*; do
         [ -r "$d/idVendor" ] || continue
@@ -105,6 +106,7 @@ echo "-- serial ports --"
 ls /dev/ttyUSB* /dev/ttyACM* /dev/ttyS[0-9]* /dev/ttyAMA* 2>/dev/null | tr '\n' ' '; echo
 
 sec "PCI"
+echo "-- devices [table] --"
 if have lspci; then lspci; else
     for d in /sys/bus/pci/devices/*; do
         [ -r "$d/vendor" ] || continue
@@ -279,7 +281,7 @@ def detect_remote_os(host, port):
     return "linux"
 
 
-def collect(host, port, target="auto"):
+def collect(host, port, target="auto", script=None, timeout=120):
     if host:
         if target == "auto":
             target = detect_remote_os(host, port)
@@ -296,12 +298,261 @@ def collect(host, port, target="auto"):
             if not shutil.which("sh"):
                 sys.exit("local mode needs a POSIX sh; pass a [user@]host to inspect a remote machine")
             cmd = ["sh", "-s"]
-    data = ps_payload() if target == "windows" else SH.encode()
-    p = subprocess.run(cmd, input=data, capture_output=True, timeout=120)
+    if script is not None and target != "linux":
+        sys.exit("--repro supports Linux targets only")
+    data = ps_payload() if target == "windows" else (script or SH).encode()
+    p = subprocess.run(cmd, input=data, capture_output=True, timeout=timeout)
     out = p.stdout.decode("utf-8", errors="replace").replace("\r\n", "\n")
     if not out.strip():
         sys.exit("collect failed (%s): %s" % (target, p.stderr.decode(errors="replace").strip()))
     return out
+
+
+# ---------------------------------------------------------------------------
+# Reproduction bundle (--repro DIR): Linux only. Collects what is needed to
+# rebuild the environment elsewhere (packages, env, DDS/udev/systemd/net config,
+# ROS graph, URDF, camera intrinsics) and generates Dockerfile / compose.yaml /
+# Gazebo sensor snippets so real sensors can be replaced by simulated ones.
+# ---------------------------------------------------------------------------
+REPRO_SH = r'''#!/bin/sh
+# read-only; emits "@@FILE <relative path>" followed by that file's content
+export LC_ALL=C
+have() { command -v "$1" >/dev/null 2>&1; }
+file() { printf '@@FILE %s\n' "$1"; }
+redact() { sed -E 's/((psk|password|passphrase|token|secret|key)[a-z_]*[:=] *).*/\1<redacted>/I'; }
+T() { if have timeout; then timeout "$@"; else shift; "$@"; fi; }
+
+file os-release;      cat /etc/os-release 2>/dev/null
+file uname;           uname -a; uname -m
+file timezone;        cat /etc/timezone 2>/dev/null; echo "locale: $LANG"
+file apt-packages.txt; have dpkg-query && dpkg-query -W -f='${Package}=${Version}\n' 2>/dev/null
+file apt-manual.txt;   have apt-mark && apt-mark showmanual 2>/dev/null
+file apt-sources.txt;  cat /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources 2>/dev/null | grep -v '^#' | grep .
+file pip-freeze.txt;   have pip3 && pip3 freeze 2>/dev/null
+file env.txt;          env | grep -E '^(ROS|RMW|CYCLONEDDS|FASTRTPS|FASTDDS|AMENT|COLCON|GZ_|IGN_|GAZEBO|LD_LIBRARY_PATH|PYTHONPATH|CMAKE_PREFIX_PATH|DISPLAY|TZ|LANG)' | sort
+file shell-rc.txt;     grep -nE '^[[:space:]]*(source|\.|export (ROS|RMW|CYCLONE|FASTRTPS|FASTDDS|AMENT|GZ|IGN|DISPLAY|LD_LIBRARY|PYTHONPATH))' "$HOME/.bashrc" "$HOME/.profile" 2>/dev/null
+file mounts.txt;       awk '$3 ~ /^(ext[234]|xfs|btrfs|vfat|ntfs.*|f2fs)$/ {print $2}' /proc/mounts
+file limits.txt;       ulimit -a; cat /etc/security/limits.conf /etc/security/limits.d/* 2>/dev/null | grep -v '^#' | grep .
+file sysctl.txt;       for k in net.core.rmem_max net.core.wmem_max net.ipv4.ipfrag_time net.ipv4.ipfrag_high_thresh kernel.sched_rt_runtime_us vm.swappiness; do printf '%s = %s\n' "$k" "$(sysctl -n $k 2>/dev/null)"; done
+file kernel-modules.txt; awk '{print $1}' /proc/modules | sort
+file cpu-governor.txt; cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null
+
+file net/ip-addr.txt;  ip -br addr 2>/dev/null; ip route 2>/dev/null
+file net/can.txt;      ip -details link show type can 2>/dev/null
+file net/netplan.txt;  for f in /etc/netplan/*.yaml; do [ -r "$f" ] && { echo "# $f"; redact < "$f"; }; done
+file net/nmcli.txt;    have nmcli && nmcli -t -f NAME,TYPE,DEVICE connection show 2>/dev/null
+file net/docker-networks.txt; have docker && docker network ls 2>/dev/null
+
+file dev/udev-rules.txt; for f in /etc/udev/rules.d/*.rules; do [ -r "$f" ] && { echo "# $f"; cat "$f"; }; done
+file dev/video.txt;    have v4l2-ctl && v4l2-ctl --list-devices 2>/dev/null; ls -l /dev/video* /dev/ttyUSB* /dev/ttyACM* /dev/can* 2>/dev/null
+file dev/lsusb.txt;    have lsusb && lsusb -t 2>/dev/null; have lsusb && lsusb 2>/dev/null
+file dev/realsense.txt; have rs-enumerate-devices && T 20 rs-enumerate-devices -s 2>/dev/null
+
+file services/enabled.txt; have systemctl && systemctl list-unit-files --state=enabled --no-pager 2>/dev/null
+for f in /etc/systemd/system/*.service; do
+    [ -f "$f" ] && { file "services/$(basename "$f")"; redact < "$f"; }
+done
+file services/running.txt; have systemctl && systemctl list-units --type=service --state=running --no-pager 2>/dev/null
+file services/crontab.txt; crontab -l 2>/dev/null
+
+file docker/images.txt;     have docker && docker images --format '{{.Repository}}:{{.Tag}}  {{.Size}}' 2>/dev/null
+file docker/containers.txt; have docker && docker ps -a --format '{{.Names}}  {{.Image}}  {{.Status}}  {{.Ports}}' 2>/dev/null
+
+file ws/repos.txt
+find "$HOME" /opt /srv -maxdepth 5 -name .git -type d -not -path '*/node_modules/*' -not -path '*/.cache/*' 2>/dev/null | while read -r g; do
+    d=$(dirname "$g")
+    printf '%s\t%s\t%s\tdirty=%s\n' "$d" "$(git -C "$d" remote get-url origin 2>/dev/null | sed -E 's#(://)[^@/]*@#\1#')" \
+        "$(git -C "$d" rev-parse --short HEAD 2>/dev/null)" "$(git -C "$d" status --porcelain 2>/dev/null | wc -l)"
+done
+file ws/colcon-workspaces.txt
+find "$HOME" /opt /srv -maxdepth 4 -name setup.bash -path '*/install/*' 2>/dev/null
+file ws/opt.txt;       ls -1 /opt 2>/dev/null
+
+file dds/files.txt
+find "$HOME" /opt /etc /srv -maxdepth 5 \( -iname 'cyclonedds*.xml' -o -iname 'fastrtps*.xml' -o -iname 'fastdds*.xml' -o -iname 'zenoh*.json5' \) 2>/dev/null | head -20 | while read -r f; do
+    echo "## $f"; head -c 20000 "$f"; echo
+done
+
+# ---- ROS graph (only if a distro is installed; nodes must be running to be seen) ----
+R=$(ls -d /opt/ros/*/ 2>/dev/null | head -1)
+if [ -n "$R" ]; then
+    file ros/distro; basename "$R"
+    # shellcheck disable=SC1090
+    . "${R}setup.sh" 2>/dev/null
+    if have ros2; then
+        NODES=$(T 8 ros2 node list 2>/dev/null)
+        file ros/nodes.txt;    echo "$NODES"
+        file ros/topics.txt;   T 8 ros2 topic list -t 2>/dev/null
+        file ros/services.txt; T 8 ros2 service list -t 2>/dev/null
+        file ros/packages.txt; ros2 pkg list 2>/dev/null | sort
+        RSP=$(echo "$NODES" | grep -m1 robot_state_publisher)
+        if [ -n "$RSP" ]; then
+            file ros/robot_description.urdf
+            T 10 ros2 param get "$RSP" robot_description 2>/dev/null | sed '1s/^String value is: //'
+        fi
+        for n in $(echo "$NODES" | grep -iE 'camera|realsense|lidar|hokuyo|imu|gps|driver|controller' | head -8); do
+            file "ros/params$(echo "$n" | tr '/' '_').yaml"
+            T 6 ros2 param dump "$n" 2>/dev/null
+        done
+        T 8 ros2 topic list -t 2>/dev/null | awk '$2=="[sensor_msgs/msg/CameraInfo]" {print $1}' | while read -r t; do
+            file "ros/camera_info$(echo "$t" | tr '/' '_').yaml"
+            T 6 ros2 topic echo --once --qos-reliability best_effort "$t" 2>/dev/null
+        done
+    fi
+fi
+'''
+
+
+def split_files(text):
+    files, cur = {}, None
+    for line in text.splitlines():
+        if line.startswith("@@FILE "):
+            cur = line[7:].strip()
+            if cur.startswith("/") or ".." in cur.split("/"):
+                cur = None
+            else:
+                files[cur] = []
+        elif cur is not None:
+            files[cur].append(line)
+    return {k: "\n".join(v).rstrip("\n") + "\n" for k, v in files.items() if "".join(v).strip()}
+
+
+def _cam_info(txt):
+    """crude parse of one `ros2 topic echo` CameraInfo message"""
+    def num(pat):
+        m = re.search(pat, txt, re.M)
+        return float(m.group(1)) if m else None
+    k = re.search(r"^k:\s*\n((?:- .*\n?){9})", txt, re.M)
+    kv = [float(x) for x in re.findall(r"- ([-\d.e+]+)", k.group(1))] if k else []
+    fr = re.search(r"frame_id:\s*'?([^\s']+)", txt)
+    return {"w": num(r"^width:\s*(\d+)"), "h": num(r"^height:\s*(\d+)"),
+            "fx": kv[0] if kv else None, "frame": fr.group(1) if fr else None}
+
+
+def gen_gazebo(files):
+    """Gazebo Classic (gazebo_ros_camera) sensor snippets from the captured camera_info topics.
+    <namespace>/<camera_name>/{image_raw,camera_info} reproduces the real robot's topic names."""
+    import math
+    topics = [m.groups() for m in (re.match(r"(\S+)\s+\[(\S+)\]", l) for l in files.get("ros/topics.txt", "").splitlines()) if m]
+    sdf, skipped, n = [], [], 0
+    for t, ty in topics:
+        if ty != "sensor_msgs/msg/CameraInfo":
+            continue
+        n += 1
+        txt = files.get("ros/camera_info" + t.replace("/", "_") + ".yaml")
+        ci = _cam_info(txt) if txt else {}
+        if not (ci.get("w") and ci.get("h") and ci.get("fx")):
+            skipped.append(t)
+            continue
+        parts = t.strip("/").split("/")
+        cam = parts[-2] if len(parts) >= 2 else "camera"
+        ns = "/" + "/".join(parts[:-2]) if len(parts) > 2 else ""
+        depth = "depth" in cam
+        fov = 2 * math.atan(ci["w"] / (2 * ci["fx"]))
+        sdf.append(f"""  <!-- {t}: {int(ci['w'])}x{int(ci['h'])} fx={ci['fx']:.1f}. Attach to a link that looks along +X (not the *_optical_frame). -->
+  <gazebo reference="REPLACE_WITH_LINK_FOR_{ci['frame'] or cam}">
+    <sensor name="{(ns + '_' + cam).strip('/').replace('/', '_')}" type="{'depth' if depth else 'camera'}">
+      <always_on>true</always_on><update_rate>30</update_rate>
+      <camera>
+        <horizontal_fov>{fov:.4f}</horizontal_fov>
+        <image><width>{int(ci['w'])}</width><height>{int(ci['h'])}</height><format>R8G8B8</format></image>
+        <clip><near>0.2</near><far>{'10' if depth else '100'}</far></clip>
+      </camera>
+      <plugin name="{cam}_plugin" filename="libgazebo_ros_camera.so">
+        <ros><namespace>{ns or '/'}</namespace></ros>
+        <camera_name>{cam}</camera_name>
+        <frame_name>{ci['frame'] or cam + '_optical_frame'}</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>""")
+    out = {}
+    if sdf:
+        out["gazebo/camera_sensors.urdf.xml"] = ("<!-- Gazebo Classic (gazebo_ros_pkgs). Paste inside <robot> of the xacro. Intrinsics come from the real robot. -->\n"
+                                                 "<robot>\n" + "\n".join(sdf) + "\n</robot>\n")
+    return out, skipped, n
+
+
+def gen_env(files, fx_arch):
+    osr = dict(re.findall(r'^(\w+)="?([^"\n]*)"?', files.get("os-release", ""), re.M))
+    base = f"{osr.get('ID', 'ubuntu')}:{osr.get('VERSION_ID', '22.04')}"
+    arch = {"x86_64": "linux/amd64", "aarch64": "linux/arm64", "riscv64": "linux/riscv64"}.get(fx_arch, "linux/amd64")
+    ros = files.get("ros/distro", "").strip()
+    manual = [p for p in files.get("apt-manual.txt", "").split() if p.startswith("ros-")]
+    pips = [l for l in files.get("pip-freeze.txt", "").splitlines() if "==" in l and " @ " not in l]
+    envs = [l for l in files.get("env.txt", "").splitlines() if l.split("=", 1)[0] in
+            ("ROS_DOMAIN_ID", "RMW_IMPLEMENTATION", "CYCLONEDDS_URI", "ROS_LOCALHOST_ONLY", "ROS_AUTOMATIC_DISCOVERY_RANGE",
+             "FASTRTPS_DEFAULT_PROFILES_FILE", "ROS_DISTRO", "TZ")]
+    mounts = [m for m in files.get("mounts.txt", "").split() if not m.startswith(("/boot", "/snap", "/var/lib/docker")) and m != "/"]
+    docker = f"""FROM {base}
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg lsb-release locales python3-pip git build-essential cmake \\
+ && locale-gen en_US.UTF-8 && rm -rf /var/lib/apt/lists/*
+ENV LANG=en_US.UTF-8
+""" + (f"""RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \\
+ && echo "deb [signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" > /etc/apt/sources.list.d/ros2.list
+COPY apt-manual.txt /tmp/apt-manual.txt
+# manually installed ros-* packages of the robot (unpinned: the ROS repo keeps only the latest build).
+# exact versions: apt-packages.txt. non-ROS manual packages: apt-manual.txt (desktop apps included, review before adding).
+RUN apt-get update && grep -E '^ros-' /tmp/apt-manual.txt | xargs apt-get install -y --no-install-recommends \\
+ && rm -rf /var/lib/apt/lists/*
+RUN echo "source /opt/ros/{ros}/setup.bash" >> /etc/bash.bashrc
+""" if ros and manual else "# no ROS distro found on the target\n") + (
+        "COPY pip-freeze.txt /tmp/pip-freeze.txt\n# best effort: pins that conflict with apt-provided python packages are skipped\nRUN pip3 install --no-cache-dir -r /tmp/pip-freeze.txt || true\n" if pips else "")
+    comp = ["# generated from the robot snapshot; sensors/CAN are NOT available here -> see gazebo/ for simulated replacements",
+            "services:", "  robot:", "    build: .", f"    platform: {arch}", "    network_mode: host   # DDS multicast + same interface names as the robot's host",
+            "    stdin_open: true", "    tty: true", "    command: bash"]
+    if envs:
+        comp += ["    environment:"] + [f"      - {e}" for e in envs]
+    if mounts:
+        comp += ["    volumes:  # same paths as the robot; point the left side at copies of the data"] + \
+                [f"      - ./sim_mounts{m}:{m}" for m in mounts]
+    comp += ["    # devices:   # only if testing against a real device on this PC", "    #   - /dev/video0"]
+    return {"Dockerfile": docker, "compose.yaml": "\n".join(comp) + "\n",
+            "pip-freeze.txt": "\n".join(pips) + "\n" if pips else None,
+            "apt-manual.txt": files.get("apt-manual.txt")}
+
+
+def write_repro(text, outdir):
+    import os
+    files = split_files(text)
+    gz, skipped, ncam = gen_gazebo(files)
+    arch = (files.get("uname", "").split() or [""])[-1] if files.get("uname") else ""
+    gen = gen_env(files, arch)
+    notes = []
+    if not files.get("ros/topics.txt"):
+        notes.append("ROS topics were empty: collect while the robot's ROS launch is running, otherwise the Gazebo files are empty.")
+    if not files.get("ros/robot_description.urdf"):
+        notes.append("robot_description not captured (no robot_state_publisher running).")
+    if skipped:
+        notes.append("camera_info without intrinsics (skipped sensor snippets): " + ", ".join(skipped))
+    allf = {**files, **{k: v for k, v in gz.items()}, **{k: v for k, v in gen.items() if v}}
+    readme = f"""# Reproduction bundle
+
+Snapshot of a robot taken by `sysinfo.py --repro`. Everything under the robot's real hardware
+(CAN, RealSense, serial, GPU) cannot be moved to another PC; the files below replace it with software.
+
+| File | Purpose |
+|---|---|
+| `Dockerfile`, `compose.yaml` | Userspace: base image, ROS packages, pip pins, env vars, same mount paths, host networking |
+| `apt-packages.txt`, `apt-manual.txt`, `pip-freeze.txt` | Exact / manually-installed packages |
+| `env.txt`, `dds/`, `net/`, `dev/udev-rules.txt`, `services/` | Config the software depends on (DDS XML, IPs, CAN bitrate, udev, systemd) |
+| `ros/` | Node / topic / service lists, robot_description (URDF), node params, camera_info |
+| `gazebo/camera_sensors.urdf.xml` | Gazebo Classic `gazebo_ros_camera` sensors with the real intrinsics and topic names ({ncam} camera_info topics seen) |
+
+## Gazebo workflow (ROS 2 Humble + Gazebo Classic 11, `gazebo_ros_pkgs`)
+1. Put the `<gazebo reference=...>` blocks from `gazebo/camera_sensors.urdf.xml` into the robot xacro, each on the link that carries the camera (looks along +X, not an `*_optical_frame`).
+2. Launch the simulation. The plugin publishes `<namespace>/<camera_name>/image_raw` and `camera_info`, i.e. the real robot's topic names.
+3. Compare `ros/topics.txt` of the real robot with `ros2 topic list -t` in the simulation: missing/renamed topics and type differences are the first things that break.
+
+Not reproduced automatically: IMU/LiDAR noise and mounting, motor/CAN behaviour (use `vcan` or a stub), real latency/bandwidth, timestamps from hardware.
+""" + ("\n## Warnings\n" + "\n".join("- " + n for n in notes) + "\n" if notes else "")
+    allf["README.md"] = readme
+    for rel, content in allf.items():
+        path = os.path.join(outdir, rel)
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(content)
+    return len(allf), notes
 
 
 class Raw(list):
@@ -347,7 +598,7 @@ def as_kv(lines):
     for rx in (KV_SPACE, KV_COLON):
         rows = [rx.match(l) for l in lines]
         if all(rows):
-            return [(r.group(1), r.group(2)) for r in rows]
+            return [(r.group(1).rstrip(":"), r.group(2)) for r in rows]
     return None
 
 
@@ -372,23 +623,38 @@ def render_block(lines):
 
 
 def facts(text, secs):
-    d = {}
+    d, by = {}, {}
     for name, subs in secs:
         for _, lines in subs:
-            for kv in (as_kv(lines) or []):
-                d.setdefault(kv[0], kv[1])
+            for k, v in (as_kv(lines) or []):
+                d.setdefault(k, v)
+                by.setdefault(name, {}).setdefault(k, v)
+    bd, cd = by.get("Board / Firmware", {}), by.get("CPU", {})  # keys repeat across sections (e.g. "Model")
     out = []
     host = d.get("Hostname", "?")
-    board = d.get("Model") or d.get("product_name") or d.get("Product") or "-"
-    cpu = d.get("Model name") or d.get("Processor") or d.get("uarch") or "-"
-    isa = d.get("isa")
-    ncpu = d.get("CPU(s)") or d.get("Threads") or str(len(re.findall(r"^processor", text, re.M)) or "-")
+    placeholder = re.compile(r"default string|to be filled|o\.e\.m|not specified|system (product|manufacturer)", re.I)
+    board = next((v for v in (bd.get("Model"), bd.get("product_name"), bd.get("Product"),
+                              bd.get("board_name"), bd.get("Board")) if v and not placeholder.search(v)), "-")
+    cpu = cd.get("Model name") or cd.get("Processor") or cd.get("uarch") or "-"
+    isa = cd.get("isa")
+    # lscpu "CPU(s)" counts logical CPUs (threads), not physical cores
+    threads = cd.get("CPU(s)") or cd.get("Threads") or str(len(re.findall(r"^processor", text, re.M)) or "")
+    cores = cd.get("Cores")  # Windows reports physical cores directly
+    if not cores and cd.get("Core(s) per socket"):
+        try:
+            cores = str(int(cd["Core(s) per socket"]) * int(cd.get("Socket(s)", "1")))
+        except ValueError:
+            pass
+    if cores and threads:
+        cpus = ("Cores / Threads", f"{cores} / {threads}")
+    else:  # physical core count unknown (e.g. RISC-V): don't call the logical count "cores"
+        cpus = ("CPUs (logical)", threads or "-")
     mem = "-"
     m = re.search(r"MemTotal:\s+(\d+) kB", text)
     if m:
         mem = f"{int(m.group(1)) / 1048576:.1f} GiB"
     out += [("Host", host), ("Board", board), ("Arch", d.get("Arch", "-")),
-            ("CPU", cpu), ("Cores", ncpu), ("RAM", mem),
+            ("CPU", cpu), cpus, ("RAM", mem),
             ("OS", d.get("OS", "-")), ("Kernel", d.get("Kernel", "-").split("  (")[0])]
     if isa:
         out.append(("ISA", isa))
@@ -399,7 +665,7 @@ def facts(text, secs):
         out.append(("CPU load", d["Load"]))
     m = re.search(r"up (.+?),\s+\d+ users?", text)
     if m:
-        out.append(("Uptime", m.group(1)))
+        out.append(("Uptime", m.group(1).strip()))
     elif d.get("Uptime"):
         out.append(("Uptime", re.sub(r"^up ", "", d["Uptime"])))
     return out
@@ -470,7 +736,18 @@ def main():
     ap.add_argument("--text", action="store_true", help="print raw text, no HTML")
     ap.add_argument("--os", dest="target", choices=["auto", "linux", "windows"], default="auto",
                     help="target OS (default: auto-detect)")
+    ap.add_argument("--repro", metavar="DIR", help="also write a reproduction bundle (Linux only): packages, config, ROS graph, "
+                    "Dockerfile/compose, Gazebo camera snippets; sysinfo.html goes into DIR")
     a = ap.parse_args()
+    if a.repro:
+        import os
+        os.makedirs(a.repro, exist_ok=True)
+        n, notes = write_repro(collect(a.host, a.port, a.target, script=REPRO_SH, timeout=300), a.repro)
+        print(f"wrote {n} files to {a.repro}/")
+        for w in notes:
+            print("warning:", w)
+        if a.out == "sysinfo.html":
+            a.out = os.path.join(a.repro, "sysinfo.html")
     text = collect(a.host, a.port, a.target)
     if a.text:
         print(text, end="")

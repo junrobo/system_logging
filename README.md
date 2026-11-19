@@ -44,6 +44,7 @@ Windows에서 직접 실행할 때는 `python sysinfo.py`를 씁니다.
 | `-o`, `--out` | 출력 HTML 경로 (기본 `sysinfo.html`) |
 | `--text` | HTML 없이 원본 텍스트를 출력 |
 | `--os {auto,linux,windows}` | 대상 OS (기본 `auto`) |
+| `--repro DIR` | 환경 재현용 번들을 `DIR`에 생성 (Linux 전용, `sysinfo.html`도 `DIR`에 저장) |
 
 ## 지원 환경
 
@@ -106,6 +107,29 @@ MSYS/Cygwin/MinGW 셸이 응답해도 Windows로 처리합니다. 접속 자체�
 3. 수집기는 `=== 섹션 ===` 아래에 키-값 줄이나 표를 출력합니다. 하위 제목은 `-- 제목 --`입니다.
 4. 변환기가 섹션을 나눠서, 키-값은 표로, 나머지는 고정폭 블록으로 렌더링합니다.
    하위 제목이 `[table]`로 끝나면 키-값으로 해석하지 않고 그대로 보여 줍니다.
+
+## 환경 재현 번들 (`--repro`)
+
+```bash
+# ROS 노드가 실행 중인 상태에서 로봇을 조사
+./sysinfo.py --repro robot_snapshot user@robot
+```
+
+로봇에서 센서와 CAN은 다른 PC로 옮길 수 없으므로, 소프트웨어 환경은 그대로 만들고 센서는 시뮬레이터로 대체하는 것을 전제로 합니다.
+
+| 생성물 | 내용 |
+|---|---|
+| `Dockerfile`, `compose.yaml` | 베이스 이미지, 수동 설치된 `ros-*` 패키지, pip 목록, ROS/DDS 환경변수, 같은 경로의 볼륨, host 네트워크 |
+| `apt-packages.txt`, `apt-manual.txt`, `pip-freeze.txt` | 정확한 버전과 수동 설치 목록 |
+| `env.txt`, `dds/`, `net/`, `dev/`, `services/`, `ws/` | DDS XML, IP/CAN 설정, udev 규칙, systemd 유닛, git 저장소(커밋/수정 여부) |
+| `ros/` | 노드/토픽/서비스 목록, `robot_description`(URDF), 노드 파라미터, camera_info |
+| `gazebo/camera_sensors.urdf.xml` | Gazebo Classic `gazebo_ros_camera` 스니펫 (실제 카메라의 해상도, FOV, 토픽 이름 기준) |
+| `README.md` | 번들 사용법과 경고 |
+
+- ROS 그래프(`ros/`, `gazebo/`)는 **로봇의 ROS가 실행 중일 때만** 채워집니다.
+- camera_info를 못 받으면 해당 카메라는 건너뛰고 경고를 출력합니다.
+- 스니펫은 카메라만 만듭니다. IMU, LiDAR, CAN 모터는 자동 생성하지 않습니다.
+- 비밀번호/키 형태의 값은 netplan과 서비스 파일에서 `<redacted>`로 가립니다. 번들을 공유하기 전에 한 번 훑어보세요.
 
 ## 한계
 
